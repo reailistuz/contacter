@@ -1,0 +1,24 @@
+<div>
+    <a routerLink="/create" class="nav-link">Добавить контакт</a>
+</div>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <td>Наименование</td>
+            <td>Контакт</td>
+            <td>Примечание</td>
+            <td></td>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let c of contacts">
+            <td>{{c?.contactName}}</td>
+            <td>{{c?.contactInfo}}</td>
+            <td>{{c?.contactNote}}</td>
+            <td>
+                <a [routerLink]="['edit', c.contactID]" class="btn btn-sm btn-primary">Изменить</a>
+                <button (click)="delete(c.contactID)" class="btn btn-sm btn-danger">Удалить</button>
+            </td>
+        </tr>
+    </tbody>
+</table>
