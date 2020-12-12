@@ -1,11 +1,13 @@
 ﻿import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Contact } from './contact';
+import { Observable } from 'rxjs';
 
 @Injectable()
 export class DataService {
 
     private url = "/api/contacts";
+    public something;
 
     constructor(private http: HttpClient) {
     }
@@ -28,5 +30,15 @@ export class DataService {
     }
     deleteContact(id: number) {
         return this.http.delete(this.url + '/' + id);
+    }
+
+    public getJSON(): Observable<any> {
+        this.something = this.http.get("./api/contacts");
+        console.log(this.something);
+        return this.something;
+    }
+
+    downloadFile(): any {
+        return this.http.get('https://localhost:44303/api/contacts', { responseType: 'blob' });
     }
 }
