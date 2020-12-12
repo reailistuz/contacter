@@ -32,11 +32,11 @@ export class DataService {
         return this.http.delete(this.url + '/' + id);
     }
 
-    public getJSON(): Observable<any> {
-        this.something = this.http.get("./api/contacts");
-        console.log(this.something);
-        return this.something;
-    }
+    // public getJSON(): Observable<any> {
+    //     this.something = this.http.get("./api/contacts");
+    //     console.log(this.something);
+    //     return this.something;
+    // }
 
     downloadFile(): any {
         return this.http.get('https://localhost:44303/api/contacts', { responseType: 'blob' });

@@ -22,18 +22,18 @@ export class ContactListComponent implements OnInit {
         this.dataService.deleteContact(id).subscribe(data => this.load());
     }
 
-    downloadJSON() {
-        this.dataService.getJSON().subscribe(data => {
-            console.log(data);
-        });
-    }
+    // downloadJSON() {
+    //     this.dataService.getJSON().subscribe(data => {
+    //         console.log(data);
+    //     });
+    // }
 
     downloadFile() {
         this.dataService.downloadFile().subscribe(response => {
             let blob: any = new Blob([response], { type: 'text/json; charset=utf-8' });
             const url = window.URL.createObjectURL(blob);
             window.open(url);
-            window.location.href = response.url;
+            // window.location.href = response.url;
             fileSaver.saveAs(blob, 'contacts.json');
         }), error => console.log('Error downloading the file'),
             () => console.info('File downloaded successfully');
