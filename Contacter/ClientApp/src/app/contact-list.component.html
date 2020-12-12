@@ -1,6 +1,14 @@
 <div>
     <a routerLink="/create" class="nav-link">Добавить контакт</a>
-    <input type="button" value="Загрузить" (click)="downloadFile()" class="btn btn-info" />
+    <input type="button" value="Скачать" (click)="downloadFile()" class="btn btn-info" />
+    <!-- <input id="fileJSON" type="file" value="Загрузить" (change)="uploadFile($event.target.files)" /> -->
+
+    <form #imageForm=ngForm (ngSubmit)="uploadFile(Json)">
+        <img [src]="jsonUrl" class="jsonField">
+        <div class="json-upload">
+            <input id="file-input" #Json type="file" (change)="uploadFile($event.target.files)" />
+        </div>
+    </form>
 </div>
 <table class="table table-striped">
     <thead>

@@ -1,13 +1,15 @@
-﻿import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
+﻿import { EventEmitter, Injectable, Output } from '@angular/core';
+import { HttpClient, HttpEventType, HttpResponse } from '@angular/common/http';
 import { Contact } from './contact';
 import { Observable } from 'rxjs';
+import { map, catchError } from 'rxjs/operators';
 
 @Injectable()
 export class DataService {
 
     private url = "/api/contacts";
-    public something;
+    public progress: number;
+    public message: string;
 
     constructor(private http: HttpClient) {
     }
@@ -32,11 +34,16 @@ export class DataService {
         return this.http.delete(this.url + '/' + id);
     }
 
-    // public getJSON(): Observable<any> {
-    //     this.something = this.http.get("./api/contacts");
-    //     console.log(this.something);
-    //     return this.something;
-    // }
+    @Output() public onUploadFinished = new EventEmitter();
+
+    uploadFile(fileToUpload: File): Observable<boolean> {
+        const formData: FormData = new FormData();
+        formData.append('fileKey', fileToUpload, fileToUpload.name);
+        return this.http
+            .post('https://localhost:44303/api/uploadFile', formData, { reportProgress: true, observe: 'events' })
+            .pipe(map(() => { return true; }));
+    }
+
 
     downloadFile(): any {
         return this.http.get('https://localhost:44303/api/contacts', { responseType: 'blob' });

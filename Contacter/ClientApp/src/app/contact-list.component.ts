@@ -3,6 +3,7 @@ import { Component, OnInit } from '@angular/core';
 import { DataService } from './data.service';
 import { Router } from '@angular/router';
 import * as fileSaver from 'file-saver';
+import *  as  data from './contacts.json';
 
 @Component({
     templateUrl: './contact-list.component.html',
@@ -10,6 +11,7 @@ import * as fileSaver from 'file-saver';
 export class ContactListComponent implements OnInit {
 
     contacts: Contact[];
+    fileToUpload: File = null;
     constructor(private dataService: DataService, private router: Router) { }
 
     ngOnInit() {
@@ -22,11 +24,15 @@ export class ContactListComponent implements OnInit {
         this.dataService.deleteContact(id).subscribe(data => this.load());
     }
 
-    // downloadJSON() {
-    //     this.dataService.getJSON().subscribe(data => {
-    //         console.log(data);
-    //     });
-    // }
+    uploadFile(file: FileList) {
+        this.fileToUpload = file.item(0);
+        this.dataService.uploadFile(this.fileToUpload).subscribe(data => {
+            this.ngOnInit();
+        }, error => {
+            console.log(error);
+        });
+    }
+
 
     downloadFile() {
         this.dataService.downloadFile().subscribe(response => {

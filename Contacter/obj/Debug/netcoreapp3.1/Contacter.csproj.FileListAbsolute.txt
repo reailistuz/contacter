@@ -112,3 +112,4 @@ F:\MyOwnProject\CSharp\Contacter\Contacter\Contacter\obj\Debug\netcoreapp3.1\Con
 F:\MyOwnProject\CSharp\Contacter\Contacter\Contacter\obj\Debug\netcoreapp3.1\staticwebassets\Contacter.StaticWebAssets.Manifest.cache
 F:\MyOwnProject\CSharp\Contacter\Contacter\Contacter\obj\Debug\netcoreapp3.1\staticwebassets\Contacter.StaticWebAssets.xml
 F:\MyOwnProject\CSharp\Contacter\Contacter\Contacter\obj\Debug\netcoreapp3.1\Contacter.genruntimeconfig.cache
+F:\MyOwnProject\CSharp\Contacter\Contacter\Contacter\bin\Debug\netcoreapp3.1\Resources\JSON\contacts.json

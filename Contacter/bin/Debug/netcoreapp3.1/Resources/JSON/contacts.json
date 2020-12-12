@@ -1,0 +1,14 @@
+[
+    {
+        "contactID": 9000,
+        "contactName": "Sony",
+        "contactInfo": "800–275–6699",
+        "contactNote": "Sony US"
+    },
+    {
+        "contactID": 5000,
+        "contactName": "Amazon",
+        "contactInfo": "1-866-371-8501",
+        "contactNote": "Amazon US"
+    },
+]

@@ -19,7 +19,8 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "emitDecoratorMetadata": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
   },
   "files": [
     "src/main.ts",

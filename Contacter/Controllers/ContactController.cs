@@ -6,6 +6,11 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.IO;
 using Microsoft.AspNetCore.Hosting;
+using System.Net.Http;
+using System;
+using System.Net;
+using Newtonsoft.Json;
+using System.Net.Http.Headers;
 
 namespace HelloAngularApp.Controllers
 {
@@ -77,23 +82,125 @@ namespace HelloAngularApp.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddFile(IFormFile uploadedFile)
+        //[Route("uploadFile")]
+        //public async Task<IActionResult> AddFile(IFormFile uploadedFile)
+        public IActionResult addFile()
         {
-            if (uploadedFile != null)
-            {
-                // путь к папке Files
-                string path = "/Files/" + uploadedFile.FileName;
-                // сохраняем файл в папку Files в каталоге wwwroot
-                using (var fileStream = new FileStream(_appEnvironment.WebRootPath + path, FileMode.Create))
-                {
-                    await uploadedFile.CopyToAsync(fileStream);
-                }
-                Contact file = new Contact { ContactName = uploadedFile.FileName, ContactNote = path };
-                db.Add(file);
-                db.SaveChanges();
-            }
+            return RedirectToAction("/create");
 
-            return RedirectToAction("Index");
+            //try
+            //{
+            //    //nothing special in PhotoMultipartFormDataStreamProvider
+            //    var provider = new PhotoMultipartFormDataStreamProvider(this.workingFolder);
+            //    await request.Content.ReadAsMultipartAsync(provider);
+            //    var photos = new List<PhotoViewModel>();
+            //    foreach (var file in provider.FileData)
+            //    {
+            //        var fileInfo = new FileInfo(file.LocalFileName);
+            //        photos.Add(new PhotoViewModel
+            //        {
+            //            Name = fileInfo.Name,
+            //            Size = fileInfo.Length / 1024
+            //        });
+            //    }
+            //    return photos;
+            //}
+            //catch (Exception ex)
+            //{
+            //    throw new Exception("Error uploading file", ex);
+            //}
+        }
+
+        //[HttpPost]
+        //[Route("api/contacts/uploadFile")]
+        //public IActionResult UploadJson()
+        //{
+        //    var webRequest = WebRequest.Create("https://localhost:44303/api/contacts") as HttpWebRequest;
+        //    if (webRequest == null)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    webRequest.ContentType = "application/json";
+        //    webRequest.UserAgent = "Nothing";
+
+        //    using (var s = webRequest.GetResponse().GetResponseStream())
+        //    {
+        //        using (var sr = new StreamReader(s))
+        //        {
+        //            var contributorsAsJson = sr.ReadToEnd();
+        //            var contributors = JsonConvert.DeserializeObject<List<Contact>>(contributorsAsJson);
+        //            using (var tw = new StreamWriter(@"D:\path.json", true))
+        //            {
+        //                tw.WriteLine(contributors.ToString());
+        //                tw.Close();
+        //            }
+        //        }
+        //    }
+        //    return Ok();
+        //}
+    }
+
+    [ApiController]
+    [Route("api/uploadFile")]
+    public class SomethingElse : Controller
+    {
+        ApplicationContext db;
+        IWebHostEnvironment _appEnvironment;
+        public SomethingElse(ApplicationContext context, IWebHostEnvironment appEnvironment)
+        {
+            db = context;
+            _appEnvironment = appEnvironment;
+        }
+        [HttpPost]
+        public IActionResult UploadFile()
+        {
+            try
+            {
+                var file = Request.Form.Files[0];
+                var folderName = Path.Combine("Resources", "JSON");
+                var pathToSave = Path.Combine(Directory.GetCurrentDirectory(), folderName);
+                if (file.Length > 0)
+                {
+                    var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+                    var fullPath = Path.Combine(pathToSave, fileName);
+                    var dbPath = Path.Combine(folderName, fileName);
+                    using (var stream = new FileStream(fullPath, FileMode.Create))
+                    {
+                        file.CopyTo(stream);
+                    }
+                    using (StreamReader r = new StreamReader(fullPath))
+                    {
+                        string json = r.ReadToEnd();
+                        List<Contact> items = JsonConvert.DeserializeObject<List<Contact>>(json);
+                        dynamic array = JsonConvert.DeserializeObject(json);
+                        foreach (var item in array)
+                        {
+                            if(item != null)
+                            {
+                                string itemName = Convert.ToString(item.contactName);
+                                string itemContact = Convert.ToString(item.contactInfo);
+                                string itemNote = Convert.ToString(item.contactNote);
+                                if (db.Contacts.Where(contact => contact.ContactName == itemName && contact.ContactInfo == itemContact).Count() == 0)
+                                {
+                                    db.Contacts.Add(new Contact { ContactName = itemName, ContactInfo = itemContact, ContactNote = itemNote });
+                                    db.SaveChanges();
+                                }
+                            }
+                            
+                        }
+                    }
+                    return Ok(new { dbPath });
+                }
+                else
+                {
+                    return BadRequest();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex}");
+            }
         }
     }
 }
